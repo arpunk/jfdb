@@ -1,0 +1,29 @@
+#+TITLE: jfdb
+#+AUTHOR: Ricardo Lanziano
+#+EMAIL: arpunk@cryptolab.net
+#+STARTUP: overview hidestars align fold nodlcheck hideblocks entitiespretty
+#+OPTIONS: toc:nil
+#+LANGUAGE: es
+#+SEQ_TODO: POR-PENSAR PROPUESTA-INICIAL POR-HACER EN-PROCESO TERMINADO
+
+* Introducción
+
+  Programa que automatiza la migración de los archivos de teatros al
+  formato de jfdb. Su propósito principal es migrar los datos del
+  formato =CSV= a =PostgreSQL=.
+
+* Instalación
+
+  Para instalar la aplicación, descarguela y use =cabal=:
+
+  #+BEGIN_SRC sh
+  cd jfdb
+  cabal sandbox init
+  cabal install --enable-tests --enable-benchmarks
+  cabal test
+  #+END_SRC
+
+* Licencia
+
+  Este proyecto ha sido lanzado bajo la licencia [[http://www.gnu.org/licenses/gpl-3.0.html][GPLv3]]. Por favor, lea
+  LICENSE para más información.
