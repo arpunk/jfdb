@@ -20,16 +20,12 @@ executable jfdb
                      , attoparsec
                      , text
                      , bytestring
-                     , word8
-                     , cassava
-                     , vector
                      , transformers
                      , time
                      , persistent
                      , persistent-template
                      , persistent-postgresql
                      , esqueleto
-                     , split
                      , aeson
                      , resourcet
                      , monad-logger
@@ -48,5 +44,11 @@ test-suite jfdb-tests
                      , HUnit
                      , test-framework
                      , test-framework-hunit
+                     , text
+                     , persistent
+                     , persistent-template
+                     , persistent-postgresql
+                     , conduit
+                     , csv-conduit
   default-language:    Haskell2010
   ghc-options:         -Wall -O2 -threaded
