@@ -11,11 +11,12 @@ import           Data.Maybe (Maybe(..))
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 FichaTecnica
-  ubicacion UbicacionId
-  fecha     FechaId
-  sede      SedeId
-  notas     Text Maybe
-  lugar     Text Maybe
+  ubicacion       UbicacionId
+  encabezamientos [EncabezamientoId]
+  fecha           FechaId
+  sede            SedeId
+  notas           Text Maybe
+  lugar           Text Maybe
   UniqueFichaTecnica ubicacion fecha sede
 
 Fecha
