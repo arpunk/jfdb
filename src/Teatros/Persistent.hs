@@ -65,8 +65,8 @@ Afiche
 
 Fotografia
   fichaTecnica FichaTecnicaId
-  formato      FormatoFotografia
-  tecnologia   TecnologiaFotografia
+  formato      FormatoFotografiaId
+  tecnologia   TecnologiaFotografiaId
   fotografo    Text
   evento       Text
   disenadorV   Text
@@ -75,7 +75,7 @@ Fotografia
 
 Audiovisual
   fichaTecnica FichaTecnicaId
-  tecnologia   TecnologiaAudiovisual
+  tecnologia   TecnologiaAudiovisualId
   titulo       Text
   edicion      Text
   tiempo       Text
