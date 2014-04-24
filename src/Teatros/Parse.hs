@@ -8,12 +8,16 @@ import           Teatros.Persistent
 import           Database.Persist
 import           Control.Monad (forM_)
 
+import           Data.Char (isSpace)
 import           Data.List.Split
 
 import qualified Data.Text as T
 
 encabezamientos :: T.Text -> [T.Text]
 encabezamientos x = fmap T.pack $ split (startsWithOneOf ['A' .. 'Z']) (T.unpack x)
+
+stripSpace :: T.Text -> T.Text
+stripSpace = T.dropWhile isSpace
 
 parseInt :: T.Text -> Int
 parseInt x
