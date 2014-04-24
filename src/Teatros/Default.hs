@@ -25,7 +25,7 @@ xsTecnologiasAudiovisuales = ["BETACAM", "BETA", "VHS", "DVD", "CD"
                              ,"Material Fílmico", "Otra"]
 
 xsSedes = ["Casa Teatro Nacional", "Teatro La Castellana"
-          ,"Teatro Fanny Mikey Calle 71"]
+          ,"Teatro Fanny Mikey Calle 71", "Proyecto Pedagógico"]
 
 xsTiposDeDocumentos = ["Revista", "Libro", "Guión"]
 
