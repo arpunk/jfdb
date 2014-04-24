@@ -36,14 +36,13 @@ Ubicacion
   fisica  Text
   copias  Text
   digital Text
-  UniqueUbicacion fisica copias digital
 
 Periodico
   fichaTecnica FichaTecnicaId
   titulo       Text
   nombre       Text
   idioma       Text
-  pagina       Int
+  pagina       Text
   resumen      Text
   autor        Text
   UniquePeriodico fichaTecnica nombre
