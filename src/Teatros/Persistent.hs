@@ -40,6 +40,7 @@ Ubicacion
 
 Periodico
   fichaTecnica FichaTecnicaId
+  titulo       Text
   nombre       Text
   idioma       Text
   pagina       Int
