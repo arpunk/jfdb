@@ -12,7 +12,7 @@ import           Data.Maybe (Maybe(..))
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 FichaTecnica
   ubicacion       UbicacionId
-  encabezamientos [EncabezamientoId]
+  encabezamientos [EncabezamientoId] Maybe
   fecha           FechaId
   sede            SedeId
   notas           Text Maybe
@@ -84,7 +84,7 @@ Audiovisual
 
 Bibliografia
   fichaTecnica FichaTecnicaId
-  tipoDoc      TipoDocumento
+  tipoDoc      TipoDocumentoId
   titulo       Text
   editorial    Text
   paginas      Int
@@ -101,10 +101,11 @@ Premio
 ObraGrafica
   fichaTecnica FichaTecnicaId
   titulo       Text
-  formato      Text
+  formato      FormatoAficheId
   disenadorV   Text
   escenografo  Text
   autor        Text
+  tecnica      Text
   UniqueObraGrafica fichaTecnica titulo
 
 ActividadCultural
