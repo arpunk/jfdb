@@ -50,15 +50,14 @@ decodificarCsv archivo entidad = do
 
 -- | Construcción de tipos de documentos
 
-registrarEncabezamientos enc = do
-  mapM (\e -> do
-    menc <- getBy $ UniqueEncabezamiento e
-    case menc of
-      Just (Entity eid _) -> return eid
-      Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+registrarEncabezamientos enc = mapM (\e -> do
+  menc <- getBy $ UniqueEncabezamiento e
+  case menc of
+    Just (Entity eid _) -> return eid
+    Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
 
 migrar :: Entidad -> [[T.Text]] -> IO ()
-migrar EntidadPeriodico es = runDb $ do
+migrar EntidadPeriodico es = runDb $
   mapM_ (\(sed:nom:tit:idi:lug:ano:mes:dia:pag:res:aut:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
     encs <- registrarEncabezamientos enc
@@ -72,7 +71,7 @@ migrar EntidadPeriodico es = runDb $ do
 
     return ()) es
 
-migrar EntidadProgramaMano es = runDb $ do
+migrar EntidadProgramaMano es = runDb $
   forM_ es (\(sed:obr:aut:res:dirob:ano:mes:dia:lug:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
     encs <- registrarEncabezamientos enc
@@ -84,11 +83,12 @@ migrar EntidadProgramaMano es = runDb $ do
 
     return ())
 
-migrar EntidadAfiche es = runDb $ do
+migrar EntidadAfiche es = runDb $
   forM_ es (\(sed:tit:agr:faf:lug:ano:mes:dia:disn:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
-    form <- traerFormatoAfiche faf
     encs <- registrarEncabezamientos enc
+
+    form <- traerFormatoAfiche faf
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -97,12 +97,13 @@ migrar EntidadAfiche es = runDb $ do
 
     return ())
 
-migrar EntidadFotografia es = runDb $ do
+migrar EntidadFotografia es = runDb $
   forM_ es (\(sed:fot:eve:escen:disVest:tecn:faf:ano:mes:dia:lug:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
+    encs <- registrarEncabezamientos enc
+
     form <- traerFormatoFoto faf
     tec  <- traerTecnologiaFoto tecn
-    encs <- registrarEncabezamientos enc
 
     ubicacion  <- insert $ Ubicacion ufi uco rdi
     fecha      <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -111,11 +112,12 @@ migrar EntidadFotografia es = runDb $ do
 
     return ())
 
-migrar EntidadAudiovisual es = runDb $ do
+migrar EntidadAudiovisual es = runDb $
   forM_ es (\(sed:tit:tecn:edi:tiem:ano:mes:dia:lug:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
-    tec  <- traerTecnologiaAV tecn
     encs <- registrarEncabezamientos enc
+
+    tec  <- traerTecnologiaAV tecn
 
     ubicacion   <- insert $ Ubicacion ufi uco rdi
     fecha       <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -124,11 +126,12 @@ migrar EntidadAudiovisual es = runDb $ do
 
     return ())
 
-migrar EntidadBibliografia es = runDb $ do
+migrar EntidadBibliografia es = runDb $
   forM_ es (\(sed:tit:aut:lug:edit:ano:mes:dia:pag:ufi:nots:tipDocu:enc:uco:rdi:_) -> do
     sede <- traerSede sed
-    tdoc <- traerTipoDoc tipDocu
     encs <- registrarEncabezamientos enc
+
+    tdoc <- traerTipoDoc tipDocu
 
     ubicacion    <- insert $ Ubicacion ufi uco rdi
     fecha        <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -137,7 +140,7 @@ migrar EntidadBibliografia es = runDb $ do
 
     return ())
 
-migrar EntidadPremio es = runDb $ do
+migrar EntidadPremio es = runDb $
   forM_ es (\(sed:tit:inst:lug:ano:mes:dia:tecn:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
     encs <- registrarEncabezamientos enc
@@ -149,7 +152,7 @@ migrar EntidadPremio es = runDb $ do
 
     return ())
 
-migrar EntidadObraGrafica es = runDb $ do
+migrar EntidadObraGrafica es = runDb $
   forM_ es (\(sed:tit:forma:disVes:esce:ano:mes:dia:lug:autor:tecn:nots:ufi:uco:rdi:_) -> do
     sede <- traerSede sed
     form <- traerFormatoAfiche forma
@@ -161,7 +164,7 @@ migrar EntidadObraGrafica es = runDb $ do
 
     return ())
 
-migrar EntidadActividadCultural es = runDb $ do
+migrar EntidadActividadCultural es = runDb $
   forM_ es (\(sed:agru:ano:mes:dia:nots:ufi:uco:rdi:_) -> do
     sede <- traerSede sed
 
@@ -172,7 +175,7 @@ migrar EntidadActividadCultural es = runDb $ do
 
     return ())
 
-migrar EntidadProgramaAcademico es = runDb $ do
+migrar EntidadProgramaAcademico es = runDb $
   forM_ es (\(sed:tit:prog:profs:ano:mes:lug:uco:rdi:_) -> do
     sede <- traerSede sed
 

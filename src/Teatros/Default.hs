@@ -1,6 +1,6 @@
-{-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies, DeriveGeneric #-}
-{-# LANGUAGE OverloadedStrings, GADTs, FlexibleContexts, EmptyDataDecls #-}
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, NoMonomorphismRestriction #-}
+{-# LANGUAGE TypeFamilies, FlexibleContexts, GADTs #-}
+{-# LANGUAGE OverloadedStrings, FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances, NoMonomorphismRestriction #-}
 module Teatros.Default (prepararDb) where
 
 import           Teatros.Persistent
@@ -35,7 +35,7 @@ xsEncabezamientos = ["Historia teatro", "Crítica teatral", "Festivales"
                     ,"Directores", "Dramaturgos"
                     ,"Proyecto pedagógico", "Trayectoria"]
 
-importar t xs = forM_ xs $ (\e -> insertUnique $ t e)
+importar t xs = forM_ xs (insertUnique . t)
 
 prepararDb = do
   importar Sede                  xsSedes

@@ -1,12 +1,13 @@
-{-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies, DeriveGeneric #-}
-{-# LANGUAGE OverloadedStrings, GADTs, FlexibleContexts, EmptyDataDecls #-}
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, NoMonomorphismRestriction #-}
+{-# LANGUAGE TypeFamilies, NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedStrings, GADTs, FlexibleContexts #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Teatros.Parse where
 
 import           Teatros.Persistent
 
 import           Database.Persist
 import           Control.Monad (forM_)
+import           Control.Applicative ((<$>))
 
 import           Data.Char (isSpace)
 import           Data.List.Split
@@ -14,7 +15,7 @@ import           Data.List.Split
 import qualified Data.Text as T
 
 encabezamientos :: T.Text -> [T.Text]
-encabezamientos x = fmap T.pack $ split (startsWithOneOf ['A' .. 'Z']) (T.unpack x)
+encabezamientos x = T.pack <$> split (startsWithOneOf ['A' .. 'Z']) (T.unpack x)
 
 stripSpace :: T.Text -> T.Text
 stripSpace = T.dropWhile isSpace
