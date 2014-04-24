@@ -58,7 +58,7 @@ ProgramaMano
 Afiche
   fichaTecnica FichaTecnicaId
   titulo       Text
-  formato      FormatoAfiche
+  formato      FormatoAficheId
   agrupacion   Text
   disenador    Text
   UniqueAfiche fichaTecnica titulo
