@@ -15,12 +15,15 @@ import qualified Data.Text as T
 encabezamientos :: T.Text -> [T.Text]
 encabezamientos x = fmap T.pack $ split (startsWithOneOf ['A' .. 'Z']) (T.unpack x)
 
+parseInt :: T.Text -> Int
+parseInt x
+  | T.length x > 0 = (read . T.unpack) x
+  | otherwise = 0
+
 registrarEncabezamiento recurso enc' tabla = do
   enc <- getBy $ UniqueEncabezamiento enc'
   case enc of
-    Just e -> do
-      _ <- insertUnique $ tabla recurso (entityKey e)
-      return ()
+    Just e -> insertUnique $ tabla recurso (entityKey e)
     Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack enc'
 
 traerEntidad filtro entidad = do
