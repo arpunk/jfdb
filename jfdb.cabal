@@ -20,6 +20,7 @@ executable jfdb
                      , attoparsec
                      , text
                      , bytestring
+                     , bytestring-lexing
                      , transformers
                      , time
                      , persistent
