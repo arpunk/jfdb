@@ -9,7 +9,6 @@ import           Teatros.Default
 import           Control.Monad (forM_, mapM)
 import           Control.Monad.Logger
 import           Control.Monad.Trans.Resource
-import           Control.Monad.IO.Class (liftIO)
 
 import           Data.Maybe
 
