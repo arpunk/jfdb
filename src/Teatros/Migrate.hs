@@ -173,12 +173,12 @@ migrar EntidadActividadCultural es = runDb $ do
     return ())
 
 migrar EntidadProgramaAcademico es = runDb $ do
-  forM_ es (\ac@ (sed:tit:prog:profs:ano:mes:lug:uco:rdi:_) -> do
+  forM_ es (\(sed:tit:prog:profs:ano:mes:lug:uco:rdi:_) -> do
     sede <- traerSede sed
 
     ubicacion <- insert $ Ubicacion "Ningúna" uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) Nothing
-    ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede Nothing (Just "Ningúno")
+    ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede Nothing (Just lug)
     actividad <- insertUnique $ ProgramaAcademico ficha tit profs prog
 
     return ())
