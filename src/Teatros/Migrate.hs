@@ -49,16 +49,19 @@ decodificarCsv archivo entidad = do
 
 -- | Construcción de tipos de documentos
 
+registrarEncabezamientos enc = do
+  mapM (\e -> do
+    menc <- getBy $ UniqueEncabezamiento e
+    case menc of
+      Just (Entity eid _) -> return eid
+      Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+
 migrar :: Entidad -> [[T.Text]] -> IO ()
 migrar EntidadPeriodico es = runDb $ do
   forM_ es (\p@ (sed:nom:tit:idi:lug:ano:mes:dia:pag:res:aut:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -71,11 +74,7 @@ migrar EntidadProgramaMano es = runDb $ do
   forM_ es (\p@ (sed:obr:aut:res:dirob:ano:mes:dia:lug:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion    <- insert $ Ubicacion ufi uco rdi
     fecha        <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -89,11 +88,7 @@ migrar EntidadAfiche es = runDb $ do
     sede <- traerSede sed
     form <- traerFormatoAfiche faf
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -108,11 +103,7 @@ migrar EntidadFotografia es = runDb $ do
     form <- traerFormatoFoto faf
     tec  <- traerTecnologiaFoto tecn
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion  <- insert $ Ubicacion ufi uco rdi
     fecha      <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -126,11 +117,7 @@ migrar EntidadAudiovisual es = runDb $ do
     sede <- traerSede sed
     tec  <- traerTecnologiaAV tecn
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion   <- insert $ Ubicacion ufi uco rdi
     fecha       <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -144,11 +131,7 @@ migrar EntidadBibliografia es = runDb $ do
     sede <- traerSede sed
     tdoc <- traerTipoDoc tipDocu
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion    <- insert $ Ubicacion ufi uco rdi
     fecha        <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
@@ -161,11 +144,7 @@ migrar EntidadPremio es = runDb $ do
   forM_ es (\p@ (sed:tit:inst:lug:ano:mes:dia:tecn:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
 
-    encs <- mapM (\e -> do
-      menc <- getBy $ UniqueEncabezamiento e
-      case menc of
-        Just (Entity eid _) -> return eid
-        Nothing -> fail $ "No existe el encabezamiento " ++ T.unpack e) (encabezamientos enc)
+    encs <- registrarEncabezamientos enc
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
