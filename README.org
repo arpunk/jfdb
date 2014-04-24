@@ -19,7 +19,7 @@
   #+BEGIN_SRC sh
   cd jfdb
   cabal sandbox init
-  cabal install --enable-tests --enable-benchmarks
+  cabal install --enable-tests
   cabal test
   #+END_SRC
 
