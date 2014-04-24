@@ -4,31 +4,28 @@ module Teatros.Migrate where
 import           Teatros.Persistent
 import           Teatros.Parse
 import           Teatros.Types
-import           Teatros.Default
 
-import           Control.Monad (forM_, mapM)
+import           Control.Monad (forM_)
 import           Control.Monad.Logger
 import           Control.Monad.Trans.Resource
 
-import           Data.Maybe
 
-import           Data.Conduit
 import           Data.Text.Encoding (decodeUtf8)
 
 import           Database.Persist
 import           Database.Persist.Sql
 import           Database.Persist.Postgresql
-import           Database.Persist.TH
 
 import qualified Data.Text as T
 
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lex.Double as BS
+
 
 import qualified Data.CSV.Conduit as CSV
 import qualified Data.CSV.Conduit.Parser.Text as CSV
 
 -- | Conexión a la DB
+connStr :: BS.ByteString
 connStr = "dbname=RedTeatros2 host=localhost user=arpunk password='' port=5432"
 
 runDb :: SqlPersistT (ResourceT (NoLoggingT IO)) a -> IO a
@@ -67,7 +64,7 @@ migrar EntidadPeriodico es = runDb $
                                 (Just $ parseInt $ stripSpace mes)
                                 (Just $ parseInt $ stripSpace dia)
     ficha     <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    periodico <- insertUnique $ Periodico ficha tit nom idi pag res aut
+    _         <- insertUnique $ Periodico ficha tit nom idi pag res aut
 
     return ()) es
 
@@ -79,7 +76,7 @@ migrar EntidadProgramaMano es = runDb $
     ubicacion    <- insert $ Ubicacion ufi uco rdi
     fecha        <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha        <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    programaMano <- insertUnique $ ProgramaMano ficha obr dirob res aut
+    _            <- insertUnique $ ProgramaMano ficha obr dirob res aut
 
     return ())
 
@@ -93,7 +90,7 @@ migrar EntidadAfiche es = runDb $
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha     <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    afiche    <- insertUnique $ Afiche ficha tit form agr disn
+    _         <- insertUnique $ Afiche ficha tit form agr disn
 
     return ())
 
@@ -108,7 +105,7 @@ migrar EntidadFotografia es = runDb $
     ubicacion  <- insert $ Ubicacion ufi uco rdi
     fecha      <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha      <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    fotografia <- insertUnique $ Fotografia ficha form tec fot eve disVest escen
+    _          <- insertUnique $ Fotografia ficha form tec fot eve disVest escen
 
     return ())
 
@@ -122,7 +119,7 @@ migrar EntidadAudiovisual es = runDb $
     ubicacion   <- insert $ Ubicacion ufi uco rdi
     fecha       <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha       <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    audiovisual <- insertUnique $ Audiovisual ficha tec tit edi tiem
+    _           <- insertUnique $ Audiovisual ficha tec tit edi tiem
 
     return ())
 
@@ -136,7 +133,7 @@ migrar EntidadBibliografia es = runDb $
     ubicacion    <- insert $ Ubicacion ufi uco rdi
     fecha        <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha        <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    bibliografia <- insertUnique $ Bibliografia ficha tdoc tit edit (parseInt pag) aut
+    _            <- insertUnique $ Bibliografia ficha tdoc tit edit (parseInt pag) aut
 
     return ())
 
@@ -148,7 +145,7 @@ migrar EntidadPremio es = runDb $
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha     <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    premio    <- insertUnique $ Premio ficha tit inst tecn
+    _         <- insertUnique $ Premio ficha tit inst tecn
 
     return ())
 
@@ -160,7 +157,7 @@ migrar EntidadObraGrafica es = runDb $
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede (Just nots) (Just lug)
-    obra      <- insertUnique $ ObraGrafica ficha tit form disVes esce autor tecn
+    _         <- insertUnique $ ObraGrafica ficha tit form disVes esce autor tecn
 
     return ())
 
@@ -171,7 +168,7 @@ migrar EntidadActividadCultural es = runDb $
     ubicacion <- insert $ Ubicacion ufi uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede (Just nots) (Just "Ningúno")
-    actividad <- insertUnique $ ActividadCultural ficha agru
+    _         <- insertUnique $ ActividadCultural ficha agru
 
     return ())
 
@@ -182,6 +179,6 @@ migrar EntidadProgramaAcademico es = runDb $
     ubicacion <- insert $ Ubicacion "Ningúna" uco rdi
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) Nothing
     ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede Nothing (Just lug)
-    actividad <- insertUnique $ ProgramaAcademico ficha tit profs prog
+    _         <- insertUnique $ ProgramaAcademico ficha tit profs prog
 
     return ())

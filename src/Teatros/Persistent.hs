@@ -2,12 +2,9 @@
 {-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies #-}
 module Teatros.Persistent where
 
-import           Database.Persist
-import           Database.Persist.Sql
 import           Database.Persist.TH
 
-import           Data.Text (Text(..))
-import           Data.Maybe (Maybe(..))
+import           Data.Text (Text)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 FichaTecnica

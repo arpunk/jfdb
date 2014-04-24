@@ -6,7 +6,6 @@ module Teatros.Parse where
 import           Teatros.Persistent
 
 import           Database.Persist
-import           Control.Monad (forM_)
 import           Control.Applicative ((<$>))
 
 import           Data.Char (isSpace)
