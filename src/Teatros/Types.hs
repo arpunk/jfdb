@@ -10,3 +10,4 @@ data Entidad = EntidadPeriodico
              | EntidadPremio
              | EntidadObraGrafica
              | EntidadActividadCultural
+             | EntidadProgramaAcademico
