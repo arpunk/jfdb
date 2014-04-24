@@ -4,10 +4,12 @@ module Teatros.Migrate where
 import           Teatros.Persistent
 import           Teatros.Parse
 import           Teatros.Types
+import           Teatros.Default
 
 import           Control.Monad (forM_, mapM)
 import           Control.Monad.Logger
 import           Control.Monad.Trans.Resource
+import           Control.Monad.IO.Class (liftIO)
 
 import           Data.Maybe
 
@@ -28,14 +30,14 @@ import qualified Data.CSV.Conduit as CSV
 import qualified Data.CSV.Conduit.Parser.Text as CSV
 
 -- | Conexión a la DB
-connStr = "dbname=RedTeatros host=localhost user=arpunk password='' port=5432"
+connStr = "dbname=RedTeatros2 host=localhost user=arpunk password='' port=5432"
 
 runDb :: SqlPersistT (ResourceT (NoLoggingT IO)) a -> IO a
 runDb query = runNoLoggingT $ runResourceT . withPostgresqlConn connStr . runSqlConn . (runMigration migrateAll >>) $ query
 
 -- | Leer CSV
 myCsvSettings :: CSV.CSVSettings
-myCsvSettings = CSV.defCSVSettings { CSV.csvSep = '~' }
+myCsvSettings = CSV.defCSVSettings { CSV.csvSep = '@' }
 
 leerArchivo :: String -> IO BS.ByteString
 leerArchivo = BS.readFile . (++) "data/"
@@ -58,22 +60,22 @@ registrarEncabezamientos enc = do
 
 migrar :: Entidad -> [[T.Text]] -> IO ()
 migrar EntidadPeriodico es = runDb $ do
-  forM_ es (\p@ (sed:nom:tit:idi:lug:ano:mes:dia:pag:res:aut:nots:ufi:enc:uco:rdi:_) -> do
+  mapM_ (\p@ (sed:nom:tit:idi:lug:ano:mes:dia:pag:res:aut:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
-
     encs <- registrarEncabezamientos enc
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
-    fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
+    fecha     <- insert $ Fecha (Just $ parseInt $ stripSpace ano)
+                                (Just $ parseInt $ stripSpace mes)
+                                (Just $ parseInt $ stripSpace dia)
     ficha     <- insert $ FichaTecnica ubicacion (Just encs) fecha sede (Just nots) (Just lug)
-    periodico <- insertUnique $ Periodico ficha tit nom idi (parseInt pag) res aut
+    periodico <- insertUnique $ Periodico ficha tit nom idi pag res aut
 
-    return ())
+    return ()) es
 
 migrar EntidadProgramaMano es = runDb $ do
   forM_ es (\p@ (sed:obr:aut:res:dirob:ano:mes:dia:lug:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
-
     encs <- registrarEncabezamientos enc
 
     ubicacion    <- insert $ Ubicacion ufi uco rdi
@@ -87,7 +89,6 @@ migrar EntidadAfiche es = runDb $ do
   forM_ es (\a@ (sed:tit:agr:faf:lug:ano:mes:dia:disn:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
     form <- traerFormatoAfiche faf
-
     encs <- registrarEncabezamientos enc
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
@@ -102,7 +103,6 @@ migrar EntidadFotografia es = runDb $ do
     sede <- traerSede sed
     form <- traerFormatoFoto faf
     tec  <- traerTecnologiaFoto tecn
-
     encs <- registrarEncabezamientos enc
 
     ubicacion  <- insert $ Ubicacion ufi uco rdi
@@ -116,7 +116,6 @@ migrar EntidadAudiovisual es = runDb $ do
   forM_ es (\av@ (sed:tit:tecn:edi:tiem:ano:mes:dia:lug:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
     tec  <- traerTecnologiaAV tecn
-
     encs <- registrarEncabezamientos enc
 
     ubicacion   <- insert $ Ubicacion ufi uco rdi
@@ -130,7 +129,6 @@ migrar EntidadBibliografia es = runDb $ do
   forM_ es (\b@ (sed:tit:aut:lug:edit:ano:mes:dia:pag:ufi:nots:tipDocu:enc:uco:rdi:_) -> do
     sede <- traerSede sed
     tdoc <- traerTipoDoc tipDocu
-
     encs <- registrarEncabezamientos enc
 
     ubicacion    <- insert $ Ubicacion ufi uco rdi
@@ -143,7 +141,6 @@ migrar EntidadBibliografia es = runDb $ do
 migrar EntidadPremio es = runDb $ do
   forM_ es (\p@ (sed:tit:inst:lug:ano:mes:dia:tecn:nots:ufi:enc:uco:rdi:_) -> do
     sede <- traerSede sed
-
     encs <- registrarEncabezamientos enc
 
     ubicacion <- insert $ Ubicacion ufi uco rdi
@@ -173,5 +170,16 @@ migrar EntidadActividadCultural es = runDb $ do
     fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) (Just $ parseInt dia)
     ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede (Just nots) (Just "Ningúno")
     actividad <- insertUnique $ ActividadCultural ficha agru
+
+    return ())
+
+migrar EntidadProgramaAcademico es = runDb $ do
+  forM_ es (\ac@ (sed:tit:prog:profs:ano:mes:lug:uco:rdi:_) -> do
+    sede <- traerSede sed
+
+    ubicacion <- insert $ Ubicacion "Ningúna" uco rdi
+    fecha     <- insert $ Fecha (Just $ parseInt ano) (Just $ parseInt mes) Nothing
+    ficha     <- insert $ FichaTecnica ubicacion Nothing fecha sede Nothing (Just "Ningúno")
+    actividad <- insertUnique $ ProgramaAcademico ficha tit profs prog
 
     return ())
